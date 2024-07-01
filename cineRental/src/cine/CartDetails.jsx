@@ -3,14 +3,23 @@ import checkoutSvg from '../assets/icons/checkout.svg'
 import deleteSvg from '../assets/delete.svg'
 import { useContext } from 'react'
 import { MovieContext } from '../context/index'
+import { toast } from 'react-toastify'
 // eslint-disable-next-line react/prop-types
 export default function CartDetails({ onClose }) {
-  const { cartData, setCartData } = useContext(MovieContext)
+  const { state, dispatch } = useContext(MovieContext)
 
-  function handleRemoveCartItem(e, movieId) {
+  function handleRemoveCartItem(e, item) {
     e.preventDefault()
-    const updatedCart = cartData.filter((item) => item.id !== movieId)
-    setCartData([...updatedCart])
+    dispatch({ type: 'REMOVE_FROM_CART', payload: item })
+    toast.success(`Removed ${item.title} from cart`, {
+      position: 'bottom-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    })
   }
 
   return (
@@ -21,8 +30,8 @@ export default function CartDetails({ onClose }) {
             Your Carts
           </h2>
           <div className="space-y-8 lg:space-y-12 max-h-[450px] overflow-auto mb-10 lg:mb-14">
-            { cartData.length === 0 ? ( <p className="text-2xl font-bold text-center">No items in the cart</p> ) :
-              cartData.map((movie) => (
+            { state.cartData.length === 0 ? ( <p className="text-2xl font-bold text-center">No items in the cart</p> ) :
+              state.cartData.map((movie) => (
               <div
                 className="grid grid-cols-[1fr_auto] gap-4"
                 key={movie.id}
@@ -49,7 +58,7 @@ export default function CartDetails({ onClose }) {
                 <div className="flex items-center justify-between gap-4">
                   <button
                     className="bg-[#D42967] rounded-md p-2 md:px-4 inline-flex items-center space-x-2 text-white"
-                    onClick={(e) => handleRemoveCartItem(e, movie.id)}
+                    onClick={(e) => handleRemoveCartItem(e, movie)}
                   >
                     <img className="w-5 h-5" src={deleteSvg} alt="" />
                     <span className="max-md:hidden">Remove</span>

@@ -5,11 +5,12 @@ import { useState } from 'react'
 import MovieDetailsModal from './MovieDetailsModal'
 import { useContext } from 'react'
 import { MovieContext } from '../context/index'
+import { toast } from 'react-toastify'
 
 export default function MovieCard({ movie }) {
   const [showModal, setShowModal] = useState(false)
   const [selectedMovie, setSelectedMovie] = useState(null)
-  const { cartData, setCartData } = useContext(MovieContext)
+  const { state,dispatch  } = useContext(MovieContext)
 
   const handleModalClose = () => {
     setSelectedMovie(null)
@@ -23,12 +24,34 @@ export default function MovieCard({ movie }) {
   const handleAddToCart = (movie, e) => {
     e.stopPropagation()
 
-    const found = cartData.find((item) => item.id === movie.id)
+    const found = state.cartData.find((item) => item.id === movie.id)
 
     if (!found) {
-      setCartData([...cartData, movie])
+      dispatch({ type: 'ADD_TO_CART', payload: {
+        ...movie,
+      } })
+      toast.success('Added to cart',{
+        position: 'bottom-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      
+      })
     } else {
-      alert(`${movie.title} is already in the cart`)
+      toast.error(`This ${movie.title} Already in cart`,{
+        position: 'bottom-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      
+      
+      })
     }
   }
 
@@ -54,14 +77,14 @@ export default function MovieCard({ movie }) {
             <div className="flex items-center mb-5 space-x-1">
               <Rating value={movie.rating} />
             </div>
-            <a
+            <button
               className="bg-primary rounded-lg py-2 px-5 flex items-center justify-center gap-2 text-[#171923] font-semibold text-sm"
               href="#"
               onClick={(e) => handleAddToCart(movie, e)}
             >
               <img src="./assets/tag.svg" alt="" />
               <span>${movie.price} | Add to Cart</span>
-            </a>
+            </button>
           </figcaption>
         </a>
       </figure>

@@ -12,13 +12,13 @@ export default function Header() {
   const handleCartShow = () => {
     showCart ? setShowCart(false) : setShowCart(true)
   }
-  const { cartData } = useContext(MovieContext)
+  const { state } = useContext(MovieContext)
   const { darkMode, setDarkMode } = useContext(ThemeContext)
 
   return (
     <header>
       {showCart && (
-        <CartDetails cartData={cartData} onClose={() => setShowCart(false)} />
+        <CartDetails cartData={state.cartData} onClose={() => setShowCart(false)} />
       )}
       <nav className="container flex items-center justify-between py-6 space-x-10">
         <a href="index.html">
@@ -54,9 +54,9 @@ export default function Header() {
                 alt="cart icon"
                 onClick={handleCartShow}
               />
-              {cartData.length > 0 && (
+              {state.cartData.length > 0 && (
                 <span className="absolute flex items-center justify-center w-5 h-5 text-white rounded-full bg-primary -top-2 -right-2">
-                  {cartData.length}
+                  {state.cartData.length}
                 </span>
               )}
             </a>
